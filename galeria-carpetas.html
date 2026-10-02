@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Galería</title>
+<style>
+:root{--bg:#f4f3fa;--card:#fff;--tx:#17171c;--mu:#6b6b78;--ac:#6c4cf5;--ac2:#b04cf5;--bd:#e3e3ea;--rd:#e5484d}
+@media (prefers-color-scheme:dark){:root{--bg:#0f0f14;--card:#1a1a22;--tx:#f2f2f6;--mu:#9a9aa8;--bd:#2a2a35}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow-x:hidden}
+button,select,input{font:inherit;color:var(--tx)}
+button,select{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px 14px;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s}
+button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 16px #0002}
+button:active:not(:disabled){transform:scale(.94)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.p{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0}
+button.dg{background:var(--rd);color:#fff;border:0}
+header{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 20px;position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);animation:down .5s both}
+header h1{font-size:19px;margin:0;flex:1;display:flex;align-items:center;gap:8px}
+main{max-width:1000px;margin:0 auto;padding:20px}
+main.enter{animation:fade .45s both}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.fold{position:relative;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--bd);cursor:pointer;animation:up .5s both;animation-delay:calc(var(--i)*60ms);transition:transform .25s,box-shadow .25s}
+.fold:hover{transform:translateY(-6px) rotate(-.6deg);box-shadow:0 14px 30px #0003}
+.fold .cv{height:110px;background:linear-gradient(135deg,var(--ac),var(--ac2)) center/cover;display:flex;align-items:center;justify-content:center;font-size:42px;transition:transform .4s}
+.fold:hover .cv{transform:scale(1.1)}
+.fold .in{padding:10px 12px;position:relative;background:var(--card)}
+.fold b{display:block;word-break:break-word}.fold small{color:var(--mu)}
+.fold .x{position:absolute;top:6px;right:6px;padding:3px 9px;background:#000a;color:#fff;border:0;border-radius:50%;opacity:0}
+.fold:hover .x{opacity:1}
+.m{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--card);border:1px solid var(--bd);cursor:pointer;animation:pop .45s both;animation-delay:calc(var(--i)*40ms);transition:transform .25s,box-shadow .25s}
+.m:hover{transform:scale(1.04);box-shadow:0 10px 24px #0003;z-index:1}
+.m img,.m video{width:100%;height:100%;object-fit:cover;display:block}
+.m .t{position:absolute;left:6px;bottom:6px;background:#000a;color:#fff;font-size:12px;padding:2px 8px;border-radius:8px}
+.m .x{position:absolute;top:6px;right:6px;background:#000a;color:#fff;border:0;padding:3px 9px;border-radius:50%;opacity:0}
+.m:hover .x{opacity:1}
+.out{animation:out .3s forwards!important}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;animation:up .4s both}
+.empty{text-align:center;color:var(--mu);padding:70px 10px;animation:up .6s both}
+.empty .big{font-size:60px;animation:float 2.5s ease-in-out infinite}
+.mo{position:fixed;inset:0;background:#000a;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:50;animation:fade .25s both;padding:16px}
+.mo.out{animation:fadeo .25s forwards!important}
+.box{background:var(--card);border-radius:20px;padding:22px;width:100%;max-width:400px;animation:pop .35s cubic-bezier(.2,1.4,.4,1) both;display:flex;flex-direction:column;gap:12px}
+.box h3{margin:0}
+.box input[type=text]{padding:11px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);width:100%;transition:border .2s,box-shadow .2s}
+.box input[type=text]:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px #6c4cf544}
+.drop{height:140px;border:2px dashed var(--bd);border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mu);cursor:pointer;background:center/cover;transition:border .2s,transform .2s}
+.drop:hover{border-color:var(--ac);transform:scale(1.02)}
+.row{display:flex;gap:8px;justify-content:flex-end}
+.ov{position:fixed;inset:0;background:#000d;z-index:20;display:flex;align-items:center;justify-content:center;animation:fade .25s both}
+.ov img,.ov video{max-width:94vw;max-height:90vh;border-radius:12px;animation:pop .35s both}
+.tt{position:fixed;inset:0;background:#000;z-index:30;overflow-y:scroll;scroll-snap-type:y mandatory;animation:slide .4s both}
+.s{height:100%;scroll-snap-align:start;position:relative;display:flex;justify-content:center;color:#fff}
+.s video{width:100%;height:100%;object-fit:contain}
+.act{position:absolute;right:12px;bottom:90px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.act button{background:#0006;border:0;color:#fff;border-radius:50%;width:52px;height:52px;font-size:22px;padding:0}
+.act span{font-size:12px;display:block;text-align:center;margin-top:-12px}
+.cap{position:absolute;left:14px;bottom:30px;right:90px;font-size:14px;text-shadow:0 1px 3px #000}
+.top{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:31}
+.top button{background:#0007;color:#fff;border:0}
+.cm{position:fixed;left:0;right:0;bottom:0;max-height:60%;background:var(--card);color:var(--tx);z-index:40;border-radius:20px 20px 0 0;padding:14px;display:flex;flex-direction:column;gap:8px;animation:sheet .35s both}
+.cm .l{overflow:auto;flex:1;min-height:80px}
+.cm p{margin:6px 0;font-size:14px;animation:up .3s both}
+.cm .r{display:flex;gap:8px}.cm input{flex:1;padding:9px;border-radius:10px;border:1px solid var(--bd);background:var(--bg)}
+.heart{position:absolute;top:40%;font-size:100px;pointer-events:none;animation:hp .8s forwards}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:11px 20px;border-radius:30px;z-index:99;animation:toast 2.6s forwards}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes fadeo{to{opacity:0}}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes down{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes out{to{opacity:0;transform:scale(.4) rotate(6deg)}}
+@keyframes float{50%{transform:translateY(-12px)}}
+@keyframes slide{from{transform:translateY(100%)}to{transform:none}}
+@keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes hp{from{transform:scale(.3);opacity:1}to{transform:scale(1.5) translateY(-60px);opacity:0}}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,30px)}12%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,30px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header id="hd"></header>
+<main id="mn"></main>
+<input type="file" id="fi" accept="image/*,video/*" multiple hidden>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let db,folders=[],files=[],cur=null,sort='new',filt='all',urls={};
+const mem={folders:[],files:[]};
+function openDB(){return new Promise(r=>{try{const q=indexedDB.open('galeria',1);q.onupgradeneeded=()=>{q.result.createObjectStore('folders',{keyPath:'id'});q.result.createObjectStore('files',{keyPath:'id'})};q.onsuccess=()=>{db=q.result;r()};q.onerror=()=>r()}catch(e){r()}})}
+function all(s){return new Promise(r=>{if(!db)return r(mem[s]);try{const q=db.transaction(s).objectStore(s).getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>r([])}catch(e){r([])}})}
+function put(s,o){if(!db){const i=mem[s].findIndex(x=>x.id===o.id);i<0?mem[s].push(o):mem[s][i]=o;return Promise.resolve()}return new Promise(r=>{try{const t=db.transaction(s,'readwrite');t.objectStore(s).put(o);t.oncomplete=r;t.onerror=r}catch(e){r()}})}
+function del(s,id){if(!db){mem[s]=mem[s].filter(x=>x.id!==id);return Promise.resolve()}return new Promise(r=>{try{const t=db.transaction(s,'readwrite');t.objectStore(s).delete(id);t.oncomplete=r;t.onerror=r}catch(e){r()}})}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const url=(o,b=o.blob)=>urls[o.id]||(urls[o.id]=URL.createObjectURL(b));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}
+function modal(inner){const o=document.createElement('div');o.className='mo';o.innerHTML='<div class="box">'+inner+'</div>';document.body.appendChild(o);o.onclick=e=>{if(e.target===o)closeM(o)};return o}
+function closeM(o){o.classList.add('out');setTimeout(()=>o.remove(),250)}
+function ask(msg){return new Promise(r=>{const o=modal(`<h3>${msg}</h3><div class="row"><button id="n">Cancelar</button><button class="dg" id="y">Eliminar</button></div>`);o.querySelector('#n').onclick=()=>{closeM(o);r(false)};o.querySelector('#y').onclick=()=>{closeM(o);r(true)}})}
+async function load(){folders=await all('folders');files=await all('files');render()}
+function list(){
+  let a=files.filter(f=>f.folder===cur);
+  if(filt!=='all')a=a.filter(f=>f.kind===filt);
+  const s={new:(x,y)=>y.created-x.created,old:(x,y)=>x.created-y.created,name:(x,y)=>x.name.localeCompare(y.name),likes:(x,y)=>y.likes-x.likes,vid:(x,y)=>(y.kind==='video')-(x.kind==='video')||y.created-x.created,img:(x,y)=>(y.kind==='image')-(x.kind==='image')||y.created-x.created}[sort];
+  return a.sort(s)}
+function render(){
+  const hd=$('#hd'),mn=$('#mn');
+  mn.classList.remove('enter');void mn.offsetWidth;mn.classList.add('enter');
+  if(cur===null){
+    hd.innerHTML='<h1>📁 Mi Galería</h1><button class="p" id="nf">＋ Nueva carpeta</button>';
+    $('#nf').onclick=newFolder;
+    mn.innerHTML=folders.length?'<div class="grid">'+[...folders].sort((a,b)=>b.created-a.created).map((f,i)=>`<div class="fold" style="--i:${i}" data-id="${f.id}"><div class="cv" ${f.cover?`style="background-image:url(${url(f,f.cover)})"`:''}>${f.cover?'':'📁'}</div><button class="x" data-del="${f.id}">✕</button><div class="in"><b>${esc(f.name)}</b><small>${files.filter(x=>x.folder===f.id).length} archivos</small></div></div>`).join('')+'</div>':'<div class="empty"><div class="big">📂</div>Aún no tienes carpetas.<br>Crea la primera con “Nueva carpeta”.</div>';
+    mn.querySelectorAll('.fold').forEach(e=>e.onclick=()=>{cur=e.dataset.id;render()});
+    mn.querySelectorAll('[data-del]').forEach(e=>e.onclick=async ev=>{ev.stopPropagation();const id=e.dataset.del;if(!await ask('¿Eliminar la carpeta y todo su contenido?'))return;e.closest('.fold').classList.add('out');await wait(300);for(const f of files.filter(x=>x.folder===id))await del('files',f.id);await del('folders',id);toast('Carpeta eliminada');load()});
+    return}
+  const fo=folders.find(f=>f.id===cur);if(!fo){cur=null;return render()}
+  const a=list(),vids=files.filter(f=>f.folder===cur&&f.kind==='video').length;
+  hd.innerHTML=`<button id="bk">← Volver</button><h1>📂 ${esc(fo.name)}</h1><button class="p" id="up">⬆ Subir</button>`;
+  $('#bk').onclick=()=>{cur=null;render()};$('#up').onclick=()=>$('#fi').click();
+  mn.innerHTML=`<div class="bar"><select id="so"><option value="new">Más recientes</option><option value="old">Más antiguos</option><option value="name">Nombre A-Z</option><option value="likes">Más likes</option><option value="vid">Videos primero</option><option value="img">Imágenes primero</option></select><select id="fl"><option value="all">Todo</option><option value="image">Solo imágenes</option><option value="video">Solo videos</option></select><button id="tk" ${vids?'':'disabled'}>🎬 Modo TikTok (${vids})</button></div>`+(a.length?'<div class="grid">'+a.map((f,i)=>`<div class="m" style="--i:${i}" data-id="${f.id}">${f.kind==='video'?`<video src="${url(f)}#t=0.1" muted preload="metadata"></video><span class="t">▶ video</span>`:`<img src="${url(f)}" alt="${esc(f.name)}">`}<button class="x" data-del="${f.id}">✕</button></div>`).join('')+'</div>':'<div class="empty"><div class="big">🖼️</div>Esta carpeta está vacía.<br>Usa “Subir” o arrastra archivos aquí.</div>');
+  $('#so').value=sort;$('#fl').value=filt;
+  $('#so').onchange=e=>{sort=e.target.value;render()};$('#fl').onchange=e=>{filt=e.target.value;render()};
+  $('#tk').onclick=tiktok;
+  mn.querySelectorAll('.m').forEach(e=>e.onclick=()=>view(e.dataset.id));
+  mn.querySelectorAll('[data-del]').forEach(e=>e.onclick=async ev=>{ev.stopPropagation();if(!await ask('¿Eliminar este archivo?'))return;e.closest('.m').classList.add('out');await wait(300);await del('files',e.dataset.del);load()})}
+function newFolder(){
+  let cover=null;
+  const o=modal(`<h3>✨ Nueva carpeta</h3><input type="text" id="nm" placeholder="Nombre de la carpeta" maxlength="40" autofocus><div class="drop" id="dr">🖼️ Toca para elegir una portada<br>(opcional)</div><input type="file" id="cf" accept="image/*" hidden><div class="row"><button id="no">Cancelar</button><button class="p" id="ok">Crear</button></div>`);
+  const dr=o.querySelector('#dr'),cf=o.querySelector('#cf'),nm=o.querySelector('#nm');
+  dr.onclick=()=>cf.click();
+  cf.onchange=()=>{const f=cf.files[0];if(!f)return;cover=f;dr.style.backgroundImage=`url(${URL.createObjectURL(f)})`;dr.textContent='';dr.style.border='2px solid var(--ac)'};
+  o.querySelector('#no').onclick=()=>closeM(o);
+  const ok=async()=>{const n=nm.value.trim();if(!n){nm.animate([{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'none'}],{duration:250,iterations:2});nm.focus();return}
+    await put('folders',{id:uid(),name:n,cover,created:Date.now()});closeM(o);toast('📁 Carpeta “'+n+'” creada');load()};
+  o.querySelector('#ok').onclick=ok;nm.onkeydown=e=>{if(e.key==='Enter')ok()};setTimeout(()=>nm.focus(),50)}
+async function addFiles(fl){let n=0;
+  for(const f of fl){const kind=f.type.startsWith('video')?'video':f.type.startsWith('image')?'image':null;if(!kind)continue;
+    await put('files',{id:uid(),folder:cur,name:f.name,kind,blob:f,created:Date.now(),likes:0,liked:false,comments:[]});n++}
+  if(n)toast('✅ '+n+' archivo(s) subido(s)');load()}
+$('#fi').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+addEventListener('dragover',e=>e.preventDefault());
+addEventListener('drop',e=>{e.preventDefault();if(cur!==null)addFiles([...e.dataTransfer.files])});
+function view(id){
+  const f=files.find(x=>x.id===id),o=document.createElement('div');o.className='ov';
+  o.innerHTML=f.kind==='video'?`<video src="${url(f)}" controls autoplay></video>`:`<img src="${url(f)}">`;
+  o.onclick=e=>{if(e.target===o)o.remove()};document.body.appendChild(o)}
+function tiktok(){
+  const vs=list().filter(f=>f.kind==='video');if(!vs.length)return;
+  const t=document.createElement('div');t.className='tt';let muted=false;
+  t.innerHTML=vs.map(f=>`<section class="s" data-id="${f.id}"><video src="${url(f)}" loop playsinline></video><div class="act"><div><button data-l>${f.liked?'❤️':'🤍'}</button><span>${f.likes}</span></div><div><button data-c>💬</button><span>${f.comments.length}</span></div></div><div class="cap">${esc(f.name)}</div></section>`).join('');
+  const top=document.createElement('div');top.className='top';top.innerHTML='<button id="cl">✕ Cerrar</button><button id="mu">🔊</button>';
+  document.body.append(t,top);
+  const io=new IntersectionObserver(es=>es.forEach(en=>{const v=en.target.querySelector('video');if(en.isIntersecting){v.muted=muted;v.play().catch(()=>{})}else{v.pause();v.currentTime=0}}),{root:t,threshold:.7});
+  t.querySelectorAll('.s').forEach(s=>{
+    io.observe(s);const f=()=>files.find(x=>x.id===s.dataset.id),v=s.querySelector('video');
+    const like=async()=>{const x=f();x.liked=!x.liked;x.likes+=x.liked?1:-1;await put('files',x);const b=s.querySelector('[data-l]');b.textContent=x.liked?'❤️':'🤍';b.animate([{transform:'scale(1)'},{transform:'scale(1.5)'},{transform:'scale(1)'}],{duration:300});b.nextElementSibling.textContent=x.likes;if(x.liked){const h=document.createElement('div');h.className='heart';h.textContent='❤️';s.appendChild(h);setTimeout(()=>h.remove(),800)}};
+    s.querySelector('[data-l]').onclick=like;s.querySelector('[data-c]').onclick=()=>comments(f(),s);
+    let last=0;v.onclick=()=>{const n=Date.now();if(n-last<300){like();last=0}else{last=n;setTimeout(()=>{if(last===n)v.paused?v.play():v.pause()},300)}}});
+  $('#mu').onclick=e=>{muted=!muted;e.target.textContent=muted?'🔇':'🔊';t.querySelectorAll('video').forEach(v=>v.muted=muted)};
+  $('#cl').onclick=()=>{io.disconnect();t.remove();top.remove();document.querySelector('.cm')?.remove();render()}}
+function comments(f,s){
+  document.querySelector('.cm')?.remove();const c=document.createElement('div');c.className='cm';
+  const draw=()=>c.querySelector('.l').innerHTML=f.comments.length?f.comments.map(m=>`<p>💬 ${esc(m)}</p>`).join(''):'<p style="color:var(--mu)">Sé el primero en comentar.</p>';
+  c.innerHTML='<div style="display:flex;justify-content:space-between"><b>Comentarios</b><button id="cx">✕</button></div><div class="l"></div><div class="r"><input id="ci" placeholder="Escribe un comentario…" maxlength="300"><button class="p" id="cs">Enviar</button></div>';
+  document.body.appendChild(c);draw();
+  const send=async()=>{const i=$('#ci'),v=i.value.trim();if(!v)return;f.comments.push(v);i.value='';await put('files',f);draw();s.querySelector('[data-c]').nextElementSibling.textContent=f.comments.length};
+  $('#cs').onclick=send;$('#ci').onkeydown=e=>{if(e.key==='Enter')send()};$('#cx').onclick=()=>c.remove()}
+openDB().then(load);
+</script>
+</body>
+</html>
